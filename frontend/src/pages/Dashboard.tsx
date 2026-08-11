@@ -33,6 +33,8 @@ function ServiceDot({ status }: { status: string }) {
   const color =
     status === 'ok' || status === 'loaded'
       ? 'bg-green-500'
+      : status === 'disabled'
+      ? 'bg-gray-400'
       : status === 'not_loaded' || status === 'unreachable' || status === 'starting'
       ? 'bg-yellow-500'
       : 'bg-red-500';
@@ -109,12 +111,14 @@ export default function Dashboard() {
           {sysStatus && (
             <div className="p-5 space-y-3">
               {sysStatus.services.map(s => (
-                <div key={s.name} className="flex items-center justify-between">
+                <div key={s.name} className="flex items-center justify-between" title={s.detail || undefined}>
                   <div className="flex items-center gap-2">
                     <ServiceDot status={s.status} />
                     <span className="text-sm text-gray-700 capitalize">{s.name.replace(/_/g, ' ')}</span>
                   </div>
-                  <span className="text-xs text-gray-500">{s.status}</span>
+                  <span className={`text-xs ${s.status === 'disabled' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {s.status}
+                  </span>
                 </div>
               ))}
               <div className="pt-3 border-t border-gray-100 space-y-1">

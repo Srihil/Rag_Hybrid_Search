@@ -118,7 +118,10 @@ def system_status(db: Session = Depends(get_db)):
     # Reranker warm status
     try:
         from app.retrieval.reranker import reranker
-        if reranker.is_loaded():
+        if reranker._disabled:
+            services.append(ServiceStatus(name="reranker_model", status="disabled",
+                                          detail="disabled to stay within 512 MB — RRF used instead"))
+        elif reranker.is_loaded():
             services.append(ServiceStatus(name="reranker_model", status="loaded"))
         else:
             services.append(ServiceStatus(name="reranker_model", status="not_loaded"))
