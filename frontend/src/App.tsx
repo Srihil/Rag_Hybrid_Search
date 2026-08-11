@@ -6,6 +6,7 @@ import Ask from './pages/Ask';
 import Inspector from './pages/Inspector';
 import History from './pages/History';
 import Evaluation from './pages/Evaluation';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/inspector" element={<Inspector />} />
           <Route path="/history" element={<History />} />
           <Route path="/evaluation" element={<Evaluation />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
