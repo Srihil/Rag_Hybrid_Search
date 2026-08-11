@@ -5,6 +5,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import (
     Distance, VectorParams, PointStruct,
     Filter, FieldCondition, MatchValue,
+    PayloadSchemaType,
 )
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -48,6 +49,18 @@ class VectorStore:
                     ),
                 )
                 logger.info("qdrant_collection_created", name=settings.qdrant_collection)
+
+            # Ensure payload index exists for document_id so filtered searches work.
+            # Qdrant Cloud requires an explicit index; create_payload_index is idempotent.
+            try:
+                client.create_payload_index(
+                    collection_name=settings.qdrant_collection,
+                    field_name="document_id",
+                    field_schema=PayloadSchemaType.KEYWORD,
+                )
+                logger.info("qdrant_payload_index_ready", field="document_id")
+            except Exception as e:
+                logger.warning("qdrant_payload_index_failed", field="document_id", error=str(e))
 
     def upsert_chunks(self, chunk_records: list[dict]) -> None:
         points = [
