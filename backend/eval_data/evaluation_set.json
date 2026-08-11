@@ -1,0 +1,55 @@
+{
+  "_note": "Populate expected_chunk_ids after ingesting your documents. Run GET /api/documents/{id}/chunks to find the chunk IDs. These are placeholder questions — replace or extend with questions based on your actual documents.",
+  "questions": [
+    {
+      "question": "What is the company's parental leave policy?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to Employee Handbook parental leave section"
+    },
+    {
+      "question": "How many vacation days are employees entitled to per year?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to HR policy vacation section"
+    },
+    {
+      "question": "What is the process for requesting time off?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to leave request procedure"
+    },
+    {
+      "question": "What are the company's remote work guidelines?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to remote work policy section"
+    },
+    {
+      "question": "How does the performance review process work?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to performance management section"
+    },
+    {
+      "question": "What is the employee code of conduct?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to code of conduct section"
+    },
+    {
+      "question": "What health insurance benefits are provided?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to benefits section"
+    },
+    {
+      "question": "What is the company's policy on data security?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to IT security policy"
+    },
+    {
+      "question": "How should employees report workplace incidents?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to incident reporting procedure"
+    },
+    {
+      "question": "What training programs are available to employees?",
+      "expected_chunk_ids": [],
+      "notes": "Should map to training and development section"
+    }
+  ]
+}

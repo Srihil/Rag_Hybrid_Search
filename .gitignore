@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+backend/venv/
+venv/
+.venv/
+env/
+
+# Environment files (never commit secrets)
+.env
+backend/.env
+*.env.local
+
+# Uploads (user data, not source code)
+backend/uploads/
+uploads/
+
+# Qdrant local data
+backend/qdrant_data/
+
+# BM25 index (rebuilt on startup)
+backend/bm25_index/
+
+# PyTorch / HuggingFace model cache
+*.bin
+*.safetensors
+.cache/
+
+# Frontend build output
+frontend/dist/
+frontend/.vite/
+
+# Node modules
+node_modules/
+frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temp scripts (dev-only helpers)
+backend/create_sample_docs.py
+backend/upload_samples.py
+backend/check_status.py
+backend/cleanup_and_reupload.py
+backend/reupload_handbook.py
+backend/add_handbook_questions.py
+backend/run_evaluation.py
+backend/setup_evaluation.py
+backend/test_query.py

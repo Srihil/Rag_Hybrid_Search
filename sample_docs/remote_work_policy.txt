@@ -1,0 +1,127 @@
+MERIDIAN TECHNOLOGIES
+REMOTE WORK POLICY
+Document ID: HR-RWP-002 | Version: 2.0 | Effective: June 2024
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. PURPOSE
+
+This policy defines the framework for remote and hybrid work arrangements at Meridian Technologies. It ensures productivity, collaboration, and security are maintained regardless of where employees work.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. ELIGIBILITY
+
+2.1 Who Can Work Remotely
+
+Remote work is available to permanent employees who have completed their probation period of 90 days and whose role does not require physical presence (e.g., hardware lab, data centre operations, front-desk reception).
+
+Employees on a Performance Improvement Plan (PIP) are not eligible for remote work arrangements until the PIP is successfully completed.
+
+2.2 Types of Arrangements
+
+HYBRID (2-3 days remote per week): Available to all eligible employees. No approval required beyond manager agreement. Must be documented in the HR portal.
+
+FULLY REMOTE (5 days remote): Available for roles explicitly designated as remote-friendly by the department head. Requires approval from both the department head and HR Business Partner. Reviewed annually.
+
+TEMPORARY REMOTE (up to 4 weeks): Any eligible employee may request temporary remote work for personal reasons (e.g., relocating, caring for a family member). Requires 1 week advance notice and manager approval.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. EQUIPMENT & WORKSPACE REQUIREMENTS
+
+3.1 Company-Provided Equipment
+
+Employees approved for remote work will receive the following from IT:
+- Laptop (already issued at joining)
+- USB-C hub / docking station (upon request for full-remote employees)
+- Noise-cancelling headset (upon request, one per employee)
+
+Peripherals (external monitor, keyboard, mouse) are the employee's responsibility unless the role is designated as permanently remote, in which case a one-time stipend of INR 8,000 is provided.
+
+3.2 Internet Connectivity
+
+Employees are responsible for maintaining a stable broadband connection with minimum 25 Mbps download and 10 Mbps upload speeds. The company does not reimburse personal internet bills.
+
+If internet connectivity is frequently poor, the employee must use a company-provided mobile data SIM. Contact IT to request one.
+
+3.3 Workspace
+
+Remote employees must work from a private, secure location. Working from cafes, co-working spaces, or other public areas is permitted only with VPN enabled and for tasks that do not involve confidential customer data or sensitive business discussions.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. SECURITY REQUIREMENTS
+
+4.1 Mandatory Requirements
+
+ALL of the following are required when working remotely:
+- Connect to Meridian VPN before accessing any internal system
+- Lock screen when stepping away (Win+L on Windows, Ctrl+Cmd+Q on Mac)
+- Use only company-approved communication tools (Microsoft Teams, company email)
+- Never conduct video meetings involving confidential data in shared or public spaces
+
+4.2 Home Network Security
+
+Your home Wi-Fi router must use WPA2 or WPA3 encryption. WEP encryption is not acceptable.
+Change the default router admin password to a strong, unique password.
+Do not share company devices with family members or housemates.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AVAILABILITY & COMMUNICATION
+
+5.1 Core Hours
+
+All remote employees, regardless of arrangement type, must be available and online during core hours: 10:00 AM to 4:00 PM in their local time zone, Monday through Friday.
+
+Outside core hours, employees should respond to messages within 2 hours during standard working hours (9 AM - 7 PM).
+
+5.2 Status Updates
+
+Remote employees must keep their Microsoft Teams status up to date:
+- Green (Available): At your desk, can respond immediately
+- Yellow (Away): Stepped away briefly, will return within 15 minutes
+- Red (Busy / Do Not Disturb): In a meeting or focused work
+- Grey (Offline): Outside working hours or on leave
+
+Do not leave your status as Available if you are not actually at your desk.
+
+5.3 Meetings
+
+Camera must be turned on for all team meetings and 1-on-1s unless agreed otherwise with your manager. Camera may be turned off for large all-hands sessions.
+
+Employees are expected to be punctual for all meetings, just as they would be in the office.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. ATTENDANCE AT OFFICE
+
+6.1 Mandatory Office Days
+
+Hybrid employees must come to the office on the days agreed with their manager. The minimum expected office attendance for hybrid workers is 2 days per week.
+
+Mandatory in-office occasions include: onboarding meetings for new team members, quarterly team reviews, annual planning sessions, and client visits. Advance notice of at least 5 working days will be provided.
+
+6.2 Travel Reimbursement
+
+The company does not reimburse commute costs for office attendance on regular work days. Travel costs incurred for mandatory in-office occasions that are outside your normal commute area will be reimbursed as per the Travel Expense Policy (HR-TRV-001).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. HEALTH & WELLBEING
+
+Meridian encourages remote employees to maintain healthy work habits:
+- Take regular breaks (recommended: 5 minutes every hour, 30-minute lunch break away from screen)
+- Set clear boundaries between work and personal time — avoid responding to work messages outside agreed working hours
+- Use the Employee Assistance Programme (EAP) for confidential mental health support: eap@meridiantech.com or 1800-123-4567 (toll-free, 24/7)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. POLICY VIOLATIONS
+
+Non-compliance with this remote work policy — including working from an unauthorised location, failing to use VPN, or being repeatedly unresponsive during core hours — may result in withdrawal of remote work privileges and further disciplinary action.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For questions about this policy, contact your HR Business Partner or email remotework@meridiantech.com.

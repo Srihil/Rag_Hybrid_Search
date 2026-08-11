@@ -1,0 +1,70 @@
+services:
+  # ── Backend API ──────────────────────────────────────────────────────────────
+  - type: web
+    name: rag-hybrid-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      # PostgreSQL — set to your Neon / Render Postgres connection string
+      - key: DATABASE_URL
+        sync: false
+
+      # Qdrant Cloud — sign up free at cloud.qdrant.io
+      - key: QDRANT_MODE
+        value: remote
+      - key: QDRANT_HOST
+        sync: false          # e.g. xyz-abc.eu-central.aws.cloud.qdrant.io
+      - key: QDRANT_PORT
+        value: "6333"
+      - key: QDRANT_API_KEY
+        sync: false
+
+      # LLM — OpenRouter free models (no Ollama on Render)
+      - key: LLM_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: meta-llama/llama-3.1-8b-instruct:free
+
+      # Models (downloaded at first request, cached by Render)
+      - key: EMBEDDING_MODEL
+        value: BAAI/bge-small-en-v1.5
+      - key: RERANKER_MODEL
+        value: cross-encoder/ms-marco-MiniLM-L-6-v2
+
+      # Storage paths (ephemeral on Render free tier)
+      - key: UPLOAD_DIR
+        value: /tmp/uploads
+      - key: BM25_INDEX_PATH
+        value: /tmp/bm25_index/corpus.pkl
+
+      # Chunking & retrieval
+      - key: CHUNK_SIZE
+        value: "1000"
+      - key: CHUNK_OVERLAP
+        value: "200"
+      - key: RETRIEVAL_TOP_K
+        value: "20"
+      - key: RERANK_TOP_K
+        value: "5"
+      - key: LOG_LEVEL
+        value: INFO
+
+  # ── Frontend Static Site ─────────────────────────────────────────────────────
+  - type: web
+    name: rag-hybrid-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx serve dist -l $PORT
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: rag-hybrid-backend
+          type: web
+          property: host
