@@ -34,12 +34,12 @@ class OpenRouterProvider(BaseLLMProvider):
             "max_tokens": 1024,
         }
         try:
-            response = httpx.post(url, json=payload, headers=headers, timeout=60)
+            response = httpx.post(url, json=payload, headers=headers, timeout=25)
             response.raise_for_status()
             data = response.json()
             return data["choices"][0]["message"]["content"]
         except httpx.TimeoutException:
-            raise RuntimeError("OpenRouter request timed out")
+            raise RuntimeError("OpenRouter request timed out after 25 s — the free LLM may be overloaded, please retry")
         except httpx.HTTPStatusError as e:
             raise RuntimeError(f"OpenRouter HTTP error: {e.response.status_code} — {e.response.text}")
         except Exception as e:

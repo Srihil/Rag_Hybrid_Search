@@ -51,6 +51,23 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning("stuck_document_reset_failed", error=str(e))
 
+    # Pre-warm both models at startup so the first query doesn't hit
+    # a 10-second model-load delay that can push past Render's proxy timeout.
+    # fastembed (ONNX) uses ~200 MB total — well within the 512 MB free-tier limit.
+    try:
+        from app.embeddings.embedder import embedder
+        embedder._load()
+        logger.info("embedding_model_ready")
+    except Exception as e:
+        logger.warning("embedding_model_warmup_failed", error=str(e))
+
+    try:
+        from app.retrieval.reranker import reranker
+        reranker._load()
+        logger.info("reranker_model_ready")
+    except Exception as e:
+        logger.warning("reranker_model_warmup_failed", error=str(e))
+
     logger.info("startup_complete")
     yield
     logger.info("shutdown")
