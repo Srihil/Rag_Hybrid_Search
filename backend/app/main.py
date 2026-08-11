@@ -36,6 +36,37 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning("bm25_rebuild_failed", error=str(e))
 
+    # Reset documents that were left stuck in processing/pending from a previous crash
+    try:
+        from app.db.models import Document
+        db = SessionLocal()
+        stuck = db.query(Document).filter(Document.status.in_(["pending", "processing"])).all()
+        for doc in stuck:
+            doc.status = "failed"
+            doc.error_message = "Server restarted during processing — please re-upload"
+        if stuck:
+            db.commit()
+            logger.info("reset_stuck_documents", count=len(stuck))
+        db.close()
+    except Exception as e:
+        logger.warning("stuck_document_reset_failed", error=str(e))
+
+    # Pre-warm embedding model so it is ready before first upload
+    try:
+        from app.embeddings.embedder import embedder
+        embedder._load()
+        logger.info("embedding_model_ready")
+    except Exception as e:
+        logger.warning("embedding_model_warmup_failed", error=str(e))
+
+    # Pre-warm reranker model
+    try:
+        from app.retrieval.reranker import reranker
+        reranker._load()
+        logger.info("reranker_model_ready")
+    except Exception as e:
+        logger.warning("reranker_model_warmup_failed", error=str(e))
+
     logger.info("startup_complete")
     yield
     logger.info("shutdown")
