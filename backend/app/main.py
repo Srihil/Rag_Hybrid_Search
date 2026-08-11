@@ -61,12 +61,15 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning("embedding_model_warmup_failed", error=str(e))
 
-    try:
-        from app.retrieval.reranker import reranker
-        reranker._load()
-        logger.info("reranker_model_ready")
-    except Exception as e:
-        logger.warning("reranker_model_warmup_failed", error=str(e))
+    if settings.enable_reranker:
+        try:
+            from app.retrieval.reranker import reranker
+            reranker._load()
+            logger.info("reranker_model_ready")
+        except Exception as e:
+            logger.warning("reranker_model_warmup_failed", error=str(e))
+    else:
+        logger.info("reranker_disabled_by_config")
 
     logger.info("startup_complete")
     yield

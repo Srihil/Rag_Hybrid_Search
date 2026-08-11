@@ -7,7 +7,7 @@ logger = get_logger(__name__)
 class Reranker:
     def __init__(self):
         self._model = None
-        self._disabled = False
+        self._disabled = not settings.enable_reranker
 
     def is_loaded(self) -> bool:
         return self._model is not None

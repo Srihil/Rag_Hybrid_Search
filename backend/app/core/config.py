@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     max_upload_size_mb: int = 50
     allowed_extensions: List[str] = ["pdf", "docx", "txt"]
+    enable_reranker: bool = True  # set ENABLE_RERANKER=false on memory-constrained hosts
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
