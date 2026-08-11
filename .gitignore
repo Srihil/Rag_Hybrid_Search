@@ -73,3 +73,6 @@ backend/add_handbook_questions.py
 backend/run_evaluation.py
 backend/setup_evaluation.py
 backend/test_query.py
+
+# Word temp/lock files
+~$*

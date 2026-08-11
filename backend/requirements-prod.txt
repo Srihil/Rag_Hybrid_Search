@@ -1,3 +1,5 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 fastapi==0.115.5
 uvicorn[standard]==0.32.1
 pydantic==2.10.3
@@ -12,9 +14,10 @@ alembic==1.14.0
 # Qdrant
 qdrant-client==1.12.1
 
-# ML — standard torch (CPU), accelerate for meta tensor resolution
+# ML — CPU-only torch (~200MB vs 1.5GB for CUDA). The --extra-index-url above
+# tells pip where to find the +cpu variant.
+torch==2.5.1+cpu
 sentence-transformers==3.3.1
-torch==2.5.1
 accelerate==1.14.0
 
 # Document parsing
