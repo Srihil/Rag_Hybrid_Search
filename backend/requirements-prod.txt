@@ -1,5 +1,3 @@
---extra-index-url https://download.pytorch.org/whl/cpu
-
 fastapi==0.115.5
 uvicorn[standard]==0.32.1
 pydantic==2.10.3
@@ -14,11 +12,8 @@ alembic==1.14.0
 # Qdrant
 qdrant-client==1.12.1
 
-# ML — CPU-only torch. The --extra-index-url above points to the PyTorch wheel
-# server. torch==2.5.1+cpu has cp311 wheels available.
-torch==2.5.1+cpu
-sentence-transformers==3.3.1
-accelerate==1.14.0
+# ML — ONNX-based embeddings and reranking (no PyTorch, fits in 512 MB)
+fastembed==0.4.2
 
 # Document parsing
 pymupdf==1.24.14

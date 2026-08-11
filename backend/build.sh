@@ -1,26 +1,27 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== Step 1: Install latest CPU-only PyTorch ==="
-pip install torch --index-url https://download.pytorch.org/whl/cpu --quiet
-
-echo "=== Step 2: Install remaining dependencies ==="
+echo "=== Step 1: Install dependencies (ONNX-based, no PyTorch) ==="
 pip install -r requirements-prod.txt --quiet
 
-echo "=== Step 3: Pre-download HuggingFace models (cache for fast startup) ==="
+echo "=== Step 2: Pre-download HuggingFace models into build cache ==="
 python - <<'PYEOF'
 import os
-from sentence_transformers import SentenceTransformer, CrossEncoder
+from fastembed import TextEmbedding
+from fastembed.rerank.cross_encoder import TextCrossEncoder
 
 embedding_model = os.environ.get("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
-reranker_model  = os.environ.get("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
+reranker_model  = os.environ.get("RERANKER_MODEL",  "Xenova/ms-marco-MiniLM-L-6-v2")
 
 print(f"Downloading embedding model: {embedding_model}")
-SentenceTransformer(embedding_model)
+TextEmbedding(embedding_model)
 print(f"Downloading reranker model:  {reranker_model}")
-CrossEncoder(reranker_model)
+try:
+    TextCrossEncoder(reranker_model)
+except Exception as e:
+    print(f"Reranker download skipped (will degrade gracefully): {e}")
+
 print("Model download complete.")
 PYEOF
 
 echo "=== Build complete ==="
-pip show torch | grep Version
