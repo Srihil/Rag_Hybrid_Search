@@ -1,6 +1,7 @@
+from __future__ import annotations
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
-from typing import Optional
+from typing import List, Optional
 import os
 
 
@@ -45,7 +46,7 @@ class Settings(BaseSettings):
     # App
     log_level: str = "INFO"
     max_upload_size_mb: int = 50
-    allowed_extensions: list[str] = ["pdf", "docx", "txt"]
+    allowed_extensions: List[str] = ["pdf", "docx", "txt"]
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 

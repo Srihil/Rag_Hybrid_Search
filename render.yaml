@@ -4,8 +4,8 @@ services:
     name: rag-hybrid-backend
     runtime: python
     rootDir: backend
-    # requirements-prod.txt includes --extra-index-url for CPU-only torch (~200MB)
-    buildCommand: pip install -r requirements-prod.txt
+    # build.sh installs CPU-only torch first, then requirements-prod.txt
+    buildCommand: chmod +x build.sh && ./build.sh
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     plan: free
     envVars:
