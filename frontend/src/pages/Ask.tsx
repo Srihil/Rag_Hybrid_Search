@@ -1,18 +1,27 @@
-import { useState, useEffect } from 'react';
-import { Send, AlertTriangle, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Send, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import { api } from '../api/client';
 import type { Document, QueryResponse, Citation } from '../types';
+import MarkdownAnswer from '../components/MarkdownAnswer';
 
-function CitationCard({ c }: { c: Citation }) {
-  const [open, setOpen] = useState(false);
+// ─── CitationCard ────────────────────────────────────────────────────────────
+
+interface CitationCardProps {
+  c: Citation;
+  expanded: boolean;
+  onToggle: () => void;
+  cardRef: (el: HTMLDivElement | null) => void;
+}
+
+function CitationCard({ c, expanded, onToggle, cardRef }: CitationCardProps) {
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div ref={cardRef} className="border border-gray-200 rounded-lg overflow-hidden transition-shadow">
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={onToggle}
         className="w-full px-4 py-2.5 flex items-center gap-3 text-left hover:bg-gray-50 transition-colors"
       >
         <span className={`inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold flex-shrink-0 ${
-          c.verified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+          c.verified ? 'bg-brand-100 text-brand-700' : 'bg-red-100 text-red-600'
         }`}>
           {c.source_num}
         </span>
@@ -21,64 +30,89 @@ function CitationCard({ c }: { c: Citation }) {
           <p className="text-xs text-gray-500">
             {c.page_number ? `Page ${c.page_number}` : ''}
             {c.section_heading ? ` · ${c.section_heading}` : ''}
-            {!c.verified && <span className="text-red-500 ml-2">⚠ unverified</span>}
+            {!c.verified && <span className="text-red-500 ml-2">unverified</span>}
           </p>
         </div>
-        {open ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+        {expanded ? <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />}
       </button>
-      {open && c.text_preview && (
-        <div className="px-4 pb-3 bg-gray-50 border-t border-gray-100">
-          <p className="text-xs text-gray-600 leading-relaxed mt-2">{c.text_preview}</p>
+      {expanded && c.text_preview && (
+        <div className="px-4 pb-4 pt-2 bg-gray-50 border-t border-gray-100">
+          <p className="text-xs text-gray-600 leading-relaxed">{c.text_preview}</p>
         </div>
       )}
     </div>
   );
 }
 
+// ─── AnswerDisplay ───────────────────────────────────────────────────────────
+
 function AnswerDisplay({ result }: { result: QueryResponse }) {
-  const parts = result.answer.split(/(\[\d+\])/g);
+  const [expanded, setExpanded] = useState<Set<number>>(new Set());
+  const cardRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  const handleCiteClick = useCallback((n: number) => {
+    setExpanded(prev => {
+      const next = new Set(prev);
+      next.add(n);
+      return next;
+    });
+    // Scroll to the card after state update
+    setTimeout(() => {
+      cardRefs.current[n]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }, []);
+
+  const toggleCite = useCallback((n: number) => {
+    setExpanded(prev => {
+      const next = new Set(prev);
+      if (next.has(n)) next.delete(n); else next.add(n);
+      return next;
+    });
+  }, []);
 
   return (
     <div className="space-y-4">
-      <div className={`rounded-lg p-4 border ${
-        result.has_sufficient_evidence
-          ? 'bg-white border-gray-200'
-          : 'bg-amber-50 border-amber-200'
+      {/* Answer box */}
+      <div className={`rounded-lg p-5 border ${
+        result.has_sufficient_evidence ? 'bg-white border-gray-200' : 'bg-amber-50 border-amber-200'
       }`}>
         {!result.has_sufficient_evidence && (
           <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
-            <span className="text-sm font-medium text-amber-700">Insufficient evidence</span>
+            <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+            <span className="text-sm font-medium text-amber-700">Insufficient evidence — answer may be incomplete</span>
           </div>
         )}
-        <p className="text-sm text-gray-800 leading-relaxed">
-          {parts.map((part, i) => {
-            const m = part.match(/^\[(\d+)\]$/);
-            if (m) {
-              const n = parseInt(m[1]);
-              const citation = result.citations.find(c => c.source_num === n);
-              return (
-                <sup key={i} className={`font-bold cursor-pointer ${
-                  citation?.verified ? 'text-brand-600' : 'text-red-500'
-                }`}>{part}</sup>
-              );
-            }
-            return <span key={i}>{part}</span>;
-          })}
-        </p>
+        <MarkdownAnswer
+          text={result.answer}
+          citations={result.citations}
+          onCiteClick={handleCiteClick}
+        />
       </div>
 
+      {/* Sources */}
       {result.citations.length > 0 && (
         <div>
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Sources</h3>
+          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+            Sources · click a citation number above to expand
+          </h3>
           <div className="space-y-1.5">
-            {result.citations.map(c => <CitationCard key={c.source_num} c={c} />)}
+            {result.citations.map(c => (
+              <CitationCard
+                key={c.source_num}
+                c={c}
+                expanded={expanded.has(c.source_num)}
+                onToggle={() => toggleCite(c.source_num)}
+                cardRef={el => { cardRefs.current[c.source_num] = el; }}
+              />
+            ))}
           </div>
         </div>
       )}
     </div>
   );
 }
+
+// ─── Ask page ────────────────────────────────────────────────────────────────
 
 export default function Ask() {
   const [query, setQuery] = useState('');

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ChevronRight, Trash2 } from 'lucide-react';
+import MarkdownAnswer from '../components/MarkdownAnswer';
 import { api } from '../api/client';
 import type { QueryHistoryItem, QueryDetail, RetrievalChunk } from '../types';
 
@@ -200,7 +201,10 @@ export default function Inspector() {
               {/* Answer */}
               <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <p className="text-xs font-semibold text-gray-500 mb-2">Generated Answer</p>
-                <p className="text-sm text-gray-800 leading-relaxed">{detail.answer}</p>
+                <MarkdownAnswer
+                  text={detail.answer}
+                  citations={detail.citations}
+                />
               </div>
             </>
           )}
