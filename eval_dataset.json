@@ -1,0 +1,108 @@
+[
+  {
+    "question": "Who is eligible to work remotely at Meridian Technologies?",
+    "expected_chunk_ids": [
+      "e458de5b-738d-4a23-aa4c-84e50499cbaf"
+    ],
+    "notes": "remote_work_policy.txt — eligibility criteria and arrangement types (hybrid, fully remote, temporary)"
+  },
+  {
+    "question": "What equipment is provided to remote workers?",
+    "expected_chunk_ids": [
+      "c303edb0-35a3-4a78-9d56-4b4f3d8bb786"
+    ],
+    "notes": "remote_work_policy.txt — laptops, docking stations, headsets, peripheral stipend"
+  },
+  {
+    "question": "What are the minimum internet speed requirements for remote work?",
+    "expected_chunk_ids": [
+      "5d225378-ad78-430c-a7c4-a7d2bafcd24a"
+    ],
+    "notes": "remote_work_policy.txt — 25 Mbps download / 10 Mbps upload, workspace security guidelines"
+  },
+  {
+    "question": "What are the core working hours for remote employees?",
+    "expected_chunk_ids": [
+      "a1e96def-c81f-4c4c-8236-d77de7844b22"
+    ],
+    "notes": "remote_work_policy.txt — core hours 10 AM–4 PM local time, Teams availability"
+  },
+  {
+    "question": "What are the password requirements for company accounts?",
+    "expected_chunk_ids": [
+      "7c689817-0309-4c5f-a083-a3a70fa9441f"
+    ],
+    "notes": "it_security_policy.docx — 12 char minimum, uppercase/lowercase/digits/special, 90-day expiry"
+  },
+  {
+    "question": "Is multi-factor authentication mandatory and which methods are approved?",
+    "expected_chunk_ids": [
+      "670d6665-f56b-4463-a14c-1c0297e87e28"
+    ],
+    "notes": "it_security_policy.docx — MFA within 24 hrs, Microsoft Authenticator / Google Authenticator / FIDO2"
+  },
+  {
+    "question": "Which VPN must be used for remote access to company systems?",
+    "expected_chunk_ids": [
+      "33b22c05-7b73-4fb4-a359-c36ac8f44ca1",
+      "52d878bd-46a6-45cc-a0fe-15f2279bc884"
+    ],
+    "notes": "it_security_policy.docx — Cisco AnyConnect VPN; remote_work_policy.txt — VPN mandatory protocol"
+  },
+  {
+    "question": "How should security incidents be reported?",
+    "expected_chunk_ids": [
+      "44ac58c6-a7da-40b6-8948-833e8e792425"
+    ],
+    "notes": "it_security_policy.docx — report to SOC within 1 hour of discovery"
+  },
+  {
+    "question": "What is the maternity and paternity leave policy?",
+    "expected_chunk_ids": [
+      "64bfee7b-72c6-4a0e-9b49-2f7984994a40"
+    ],
+    "notes": "employee_handbook.docx — maternity, paternity, adoption leave provisions"
+  },
+  {
+    "question": "How many annual leave days are employees entitled to?",
+    "expected_chunk_ids": [
+      "52976cf5-f08c-470c-9689-6193f7d18d9f"
+    ],
+    "notes": "employee_handbook.docx — 18 days per year for full-time, carry-forward rules"
+  },
+  {
+    "question": "How many sick leave days are employees entitled to per year?",
+    "expected_chunk_ids": [
+      "06b3ca82-1b39-4466-9ac6-89455d83f9ae"
+    ],
+    "notes": "employee_handbook.docx — 12 days annually, medical certificate requirement"
+  },
+  {
+    "question": "How often are performance reviews held and what rating scale is used?",
+    "expected_chunk_ids": [
+      "7bd75cfc-d280-4543-b394-f57d77d9ead3"
+    ],
+    "notes": "employee_handbook.docx — bi-annual cycle, 5-point rating scale"
+  },
+  {
+    "question": "When is business class travel allowed?",
+    "expected_chunk_ids": [
+      "294c8b97-f09e-424d-a779-99c664990659"
+    ],
+    "notes": "expense_travel_policy.txt — economy vs business class eligibility rules"
+  },
+  {
+    "question": "What expenses are not reimbursable by the company?",
+    "expected_chunk_ids": [
+      "0b4f148a-b35a-4a4e-b358-3123b8080322"
+    ],
+    "notes": "expense_travel_policy.txt — personal costs, fines, family-related charges"
+  },
+  {
+    "question": "What is the branching strategy and pull request process for engineers?",
+    "expected_chunk_ids": [
+      "4c99718f-10d2-48f6-a48d-16fbb9c6ab6b"
+    ],
+    "notes": "engineering_onboarding.docx — GitFlow branching, naming conventions, PR requirements"
+  }
+]
