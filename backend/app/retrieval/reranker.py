@@ -40,6 +40,11 @@ class Reranker:
                 candidates[i] = chunk
             return candidates[:top_k]
 
+        # Cap candidates sent to the cross-encoder to avoid OOM on 512 MB instances.
+        # RRF already orders by relevance, so the top-N are the most promising.
+        max_to_score = min(len(candidates), top_k * 2)
+        candidates = candidates[:max_to_score]
+
         passages = [c["text"] for c in candidates]
         scores = list(self._model.rerank(query, passages))
 
