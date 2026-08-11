@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Trash2 } from 'lucide-react';
 import { api } from '../api/client';
 import type { QueryHistoryItem, QueryDetail, RetrievalChunk } from '../types';
 
@@ -55,10 +55,11 @@ export default function Inspector() {
   const [selected, setSelected] = useState<string | null>(null);
   const [detail, setDetail] = useState<QueryDetail | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
-  useEffect(() => {
-    api.query.history(20).then(setHistory).catch(() => {});
-  }, []);
+  const loadHistory = () => api.query.history(20).then(setHistory).catch(() => {});
+
+  useEffect(() => { loadHistory(); }, []);
 
   const loadDetail = async (id: string) => {
     setSelected(id);
@@ -67,6 +68,17 @@ export default function Inspector() {
       setDetail(await api.query.get(id));
     } catch { setDetail(null); }
     setLoading(false);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setDeleting(id);
+    try {
+      await api.query.delete(id);
+      setHistory(h => h.filter(q => q.id !== id));
+      if (selected === id) { setSelected(null); setDetail(null); }
+    } catch { /* ignore */ }
+    setDeleting(null);
   };
 
   const trace = detail?.retrieval_trace;
@@ -87,16 +99,26 @@ export default function Inspector() {
           <div className="divide-y divide-gray-50 max-h-[calc(100vh-200px)] overflow-y-auto">
             {history.length === 0 && <p className="px-4 py-3 text-xs text-gray-400">No queries yet</p>}
             {history.map(q => (
-              <button
+              <div
                 key={q.id}
                 onClick={() => loadDetail(q.id)}
-                className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors ${
+                className={`group relative flex items-start gap-2 px-3 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors ${
                   selected === q.id ? 'bg-brand-50 border-l-2 border-brand-500' : ''
                 }`}
               >
-                <p className="text-xs text-gray-700 line-clamp-2">{q.query}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{new Date(q.created_at).toLocaleString()}</p>
-              </button>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-700 line-clamp-2">{q.query}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{new Date(q.created_at).toLocaleString()}</p>
+                </div>
+                <button
+                  onClick={(e) => handleDelete(e, q.id)}
+                  disabled={deleting === q.id}
+                  className="flex-shrink-0 opacity-0 group-hover:opacity-100 p-1 rounded text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                  title="Delete query"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
             ))}
           </div>
         </div>

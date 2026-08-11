@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from typing import List
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from app.api.deps import get_db
@@ -20,10 +21,10 @@ class EvalResultOut(BaseModel):
 
 
 class EvalDatasetItem(BaseModel):
-    id: str
+    id: str = ""
     question: str
     expected_chunk_ids: list[str]
-    notes: str
+    notes: str = ""
 
 
 @router.post("/run", response_model=list[EvalResultOut])
@@ -109,3 +110,25 @@ def add_eval_question(item: EvalDatasetItem, db: Session = Depends(get_db)):
         expected_chunk_ids=row.expected_chunk_ids,
         notes=row.notes or "",
     )
+
+
+class BulkImportResult(BaseModel):
+    imported: int
+
+
+@router.post("/dataset/bulk", response_model=BulkImportResult, status_code=201)
+def bulk_import_eval_dataset(items: List[EvalDatasetItem], db: Session = Depends(get_db)):
+    """Import a JSON array of evaluation questions in one request."""
+    from app.db.models import EvaluationItem as EvalModel
+    rows = [
+        EvalModel(
+            question=item.question,
+            expected_chunk_ids=item.expected_chunk_ids,
+            notes=item.notes,
+        )
+        for item in items
+    ]
+    db.bulk_save_objects(rows)
+    db.commit()
+    logger.info("eval_dataset_bulk_imported", count=len(rows))
+    return BulkImportResult(imported=len(rows))

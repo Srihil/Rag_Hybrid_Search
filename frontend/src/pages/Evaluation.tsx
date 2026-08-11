@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Play, RefreshCw } from 'lucide-react';
+import { Play, RefreshCw, Upload, FileJson } from 'lucide-react';
 import { api } from '../api/client';
 import type { EvalResult } from '../types';
 
@@ -11,13 +11,15 @@ const STRATEGY_LABELS: Record<string, string> = {
   hybrid_reranked: 'Hybrid + Reranker',
 };
 
-const STRATEGY_COLORS = ['#94a3b8', '#6366f1', '#3b82f6', '#10b981'];
-
 export default function Evaluation() {
   const [results, setResults] = useState<EvalResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<string | null>(null);
+  const [datasetCount, setDatasetCount] = useState<number | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     setLoading(true);
@@ -26,7 +28,14 @@ export default function Evaluation() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  const loadDatasetCount = async () => {
+    try {
+      const items = await api.evaluation.dataset();
+      setDatasetCount(items.length);
+    } catch { setDatasetCount(0); }
+  };
+
+  useEffect(() => { load(); loadDatasetCount(); }, []);
 
   const runEval = async () => {
     setRunning(true);
@@ -38,6 +47,25 @@ export default function Evaluation() {
       setError(e.message);
     }
     setRunning(false);
+  };
+
+  const handleImport = async (file: File) => {
+    setImporting(true);
+    setImportResult(null);
+    setError(null);
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const items = Array.isArray(parsed) ? parsed : [parsed];
+      if (items.length === 0) throw new Error('JSON file is empty');
+      const result = await api.evaluation.bulkImport(items);
+      setImportResult(`Imported ${result.imported} question${result.imported !== 1 ? 's' : ''} successfully`);
+      loadDatasetCount();
+    } catch (e: any) {
+      setError(`Import failed: ${e.message}`);
+    }
+    setImporting(false);
+    if (fileRef.current) fileRef.current.value = '';
   };
 
   const chartData = results.map(r => ({
@@ -66,6 +94,54 @@ export default function Evaluation() {
         </div>
       </div>
 
+      {/* Dataset import panel */}
+      <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-gray-900">Evaluation Dataset</h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {datasetCount === null ? 'Loading…' : `${datasetCount} question${datasetCount !== 1 ? 's' : ''} in dataset`}
+            </p>
+          </div>
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={importing}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            {importing ? 'Importing…' : 'Import JSON'}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={e => e.target.files?.[0] && handleImport(e.target.files[0])}
+          />
+        </div>
+
+        {importResult && (
+          <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">{importResult}</div>
+        )}
+
+        <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
+          <div className="flex items-start gap-2 mb-2">
+            <FileJson className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+            <p className="text-xs font-medium text-gray-600">Expected JSON format</p>
+          </div>
+          <pre className="text-xs text-gray-500 overflow-x-auto">{`[
+  {
+    "question": "Who can work remotely?",
+    "expected_chunk_ids": ["<chunk-id-1>", "<chunk-id-2>"],
+    "notes": "optional description"
+  }
+]`}</pre>
+          <p className="text-xs text-gray-400 mt-2">
+            Get chunk IDs from the Inspector page — hover a chunk to see its ID, or use the Documents page to expand chunks.
+          </p>
+        </div>
+      </div>
+
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
       )}
@@ -73,9 +149,7 @@ export default function Evaluation() {
       {results.length === 0 && !loading && (
         <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-lg">
           <p className="text-sm text-gray-500">No evaluation results yet.</p>
-          <p className="text-xs text-gray-400 mt-1">
-            Add evaluation questions via the API, then click Run Evaluation.
-          </p>
+          <p className="text-xs text-gray-400 mt-1">Import an evaluation dataset above, then click Run Evaluation.</p>
         </div>
       )}
 

@@ -66,6 +66,9 @@ export const api = {
       request(`/query/history?limit=${limit}`),
 
     get: (id: string): Promise<QueryDetail> => request(`/query/${id}`),
+
+    delete: (id: string): Promise<void> =>
+      request(`/query/${id}`, { method: 'DELETE' }),
   },
 
   evaluation: {
@@ -73,6 +76,8 @@ export const api = {
     results: (): Promise<EvalResult[]> => request('/evaluation/results'),
     dataset: (): Promise<Array<{ id: string; question: string; expected_chunk_ids: string[]; notes: string }>> =>
       request('/evaluation/dataset'),
+    bulkImport: (items: Array<{ question: string; expected_chunk_ids: string[]; notes?: string }>): Promise<{ imported: number }> =>
+      request('/evaluation/dataset/bulk', { method: 'POST', body: JSON.stringify(items) }),
   },
 
   system: {

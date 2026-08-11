@@ -140,6 +140,15 @@ def get_query_history(limit: int = 50, db: Session = Depends(get_db)):
     ]
 
 
+@router.delete("/{query_id}", status_code=204)
+def delete_query(query_id: str, db: Session = Depends(get_db)):
+    record = db.get(QueryRecord, query_id)
+    if not record:
+        raise HTTPException(404, "Query not found")
+    db.delete(record)
+    db.commit()
+
+
 @router.get("/{query_id}", response_model=QueryDetailResponse)
 def get_query(query_id: str, db: Session = Depends(get_db)):
     record = db.get(QueryRecord, query_id)
