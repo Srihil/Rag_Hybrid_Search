@@ -1,3 +1,5 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 fastapi==0.115.5
 uvicorn[standard]==0.32.1
 pydantic==2.10.3
@@ -12,10 +14,11 @@ alembic==1.14.0
 # Qdrant
 qdrant-client==1.12.1
 
-# ML — torch installed first via build.sh using CPU wheel index.
-# sentence-transformers + accelerate are installed after torch is already present.
-sentence-transformers>=3.3.1
-accelerate>=1.0.0
+# ML — CPU-only torch. The --extra-index-url above points to the PyTorch wheel
+# server. torch==2.5.1+cpu has cp311 wheels available.
+torch==2.5.1+cpu
+sentence-transformers==3.3.1
+accelerate==1.14.0
 
 # Document parsing
 pymupdf==1.24.14
