@@ -76,3 +76,5 @@ backend/test_query.py
 
 # Word temp/lock files
 ~$*
+
+.claude/
