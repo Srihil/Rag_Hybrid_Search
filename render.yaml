@@ -71,7 +71,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: rag-hybrid-backend
-          type: web
-          property: host
+        value: https://rag-hybrid-backend-a7go.onrender.com
