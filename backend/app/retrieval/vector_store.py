@@ -24,12 +24,14 @@ class VectorStore:
                 os.makedirs(settings.qdrant_local_path, exist_ok=True)
                 self._client = QdrantClient(path=settings.qdrant_local_path)
             else:
+                # Qdrant Cloud: api_key is set → use HTTPS on port 6333
+                # Local Docker: no api_key → plain HTTP
                 self._client = QdrantClient(
                     host=settings.qdrant_host,
                     port=settings.qdrant_port,
-                    api_key=settings.qdrant_api_key or None,
+                    api_key=settings.qdrant_api_key if settings.qdrant_api_key else None,
+                    https=bool(settings.qdrant_api_key),
                     timeout=30,
-                    https=bool(settings.qdrant_api_key),  # Cloud uses HTTPS
                 )
         return self._client
 

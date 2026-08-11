@@ -84,12 +84,13 @@ def system_status(db: Session = Depends(get_db)):
         except Exception as e:
             services.append(ServiceStatus(name="qdrant", status="error", detail=str(e)))
     else:
+        # Use the actual authenticated qdrant client — works for both
+        # local Docker and Qdrant Cloud (which requires HTTPS + API key)
         try:
-            resp = httpx.get(f"http://{settings.qdrant_host}:{settings.qdrant_port}/healthz", timeout=3)
-            if resp.status_code == 200:
-                services.append(ServiceStatus(name="qdrant", status="ok"))
-            else:
-                services.append(ServiceStatus(name="qdrant", status="error", detail=f"HTTP {resp.status_code}"))
+            from app.retrieval.vector_store import vector_store
+            client = vector_store._get_client()
+            cols = [c.name for c in client.get_collections().collections]
+            services.append(ServiceStatus(name="qdrant", status="ok", detail=f"collections: {cols}"))
         except Exception as e:
             services.append(ServiceStatus(name="qdrant", status="error", detail=str(e)))
 
