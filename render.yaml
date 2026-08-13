@@ -45,6 +45,10 @@ services:
       - key: QDRANT_LOCAL_PATH
         value: /tmp/qdrant_data
 
+      # Auth
+      - key: JWT_SECRET_KEY
+        sync: false
+
       # Retrieval settings
       - key: CHUNK_SIZE
         value: "1000"

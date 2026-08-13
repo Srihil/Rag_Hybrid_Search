@@ -1,5 +1,6 @@
-import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, FileText, MessageSquare, Search, History, BarChart3 } from 'lucide-react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, FileText, MessageSquare, Search, History, BarChart3, LogOut } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const nav = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -11,6 +12,18 @@ const nav = [
 ];
 
 export default function Layout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate('/login', { replace: true });
+  }
+
+  const initials = user?.username
+    ? user.username.slice(0, 2).toUpperCase()
+    : '?';
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
@@ -24,6 +37,7 @@ export default function Layout() {
           </div>
           <p className="text-xs text-gray-500 mt-0.5">Knowledge Base</p>
         </div>
+
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {nav.map(({ to, icon: Icon, label }) => (
             <NavLink
@@ -43,8 +57,26 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-        <div className="px-5 py-3 border-t border-gray-200">
-          <p className="text-xs text-gray-400">Hybrid RAG v1.0</p>
+
+        {/* User section */}
+        <div className="px-3 py-3 border-t border-gray-200 space-y-1">
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-md">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #4361ee, #7c3aed)' }}>
+              {initials}
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-gray-800 truncate">{user?.username}</p>
+              <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign out
+          </button>
         </div>
       </aside>
 

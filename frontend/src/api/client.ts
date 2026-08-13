@@ -12,29 +12,65 @@ const BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
   : '/api';
 
+function authHeaders(): HeadersInit {
+  const token = localStorage.getItem('auth_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function handleUnauthorized() {
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('auth_user');
+  window.location.href = '/login';
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { 'Content-Type': 'application/json', ...authHeaders(), ...options?.headers },
     ...options,
   });
+
+  if (res.status === 401) {
+    handleUnauthorized();
+    throw new Error('Session expired — please log in again');
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || `HTTP ${res.status}`);
   }
-  // 204 No Content (e.g. DELETE) has no body — don't call .json()
+
   if (res.status === 204 || res.headers.get('content-length') === '0') {
     return undefined as T;
   }
   return res.json();
 }
 
-// Documents
+export interface AuthTokenResponse {
+  access_token: string;
+  token_type: string;
+  username: string;
+  email: string;
+}
+
 export const api = {
+  auth: {
+    login: (email: string, password: string): Promise<AuthTokenResponse> =>
+      request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+
+    register: (email: string, username: string, password: string): Promise<AuthTokenResponse> =>
+      request('/auth/register', { method: 'POST', body: JSON.stringify({ email, username, password }) }),
+  },
+
   documents: {
     upload: async (file: File): Promise<Document> => {
       const form = new FormData();
       form.append('file', file);
-      const res = await fetch(`${BASE}/documents/upload`, { method: 'POST', body: form });
+      const res = await fetch(`${BASE}/documents/upload`, {
+        method: 'POST',
+        body: form,
+        headers: { ...authHeaders() },
+      });
+      if (res.status === 401) { handleUnauthorized(); throw new Error('Session expired'); }
       if (!res.ok) {
         const err = await res.json().catch(() => ({ detail: res.statusText }));
         throw new Error(err.detail || `HTTP ${res.status}`);

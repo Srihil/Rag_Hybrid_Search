@@ -43,6 +43,11 @@ class Settings(BaseSettings):
     rerank_top_k: int = 5
     rrf_k: int = 60
 
+    # Auth
+    jwt_secret_key: str = "change-me-in-production-use-a-long-random-secret-key"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
+
     # App
     log_level: str = "INFO"
     max_upload_size_mb: int = 50

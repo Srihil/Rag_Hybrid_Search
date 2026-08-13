@@ -6,7 +6,7 @@ from app.core.config import settings
 from app.core.logging import setup_logging, get_logger
 from app.db.base import Base
 from app.db.session import engine, SessionLocal
-from app.api.routes import documents, query, evaluation, system
+from app.api.routes import documents, query, evaluation, system, auth
 
 setup_logging()
 logger = get_logger(__name__)
@@ -91,6 +91,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, prefix="/api", tags=["auth"])
 app.include_router(system.router, prefix="/api", tags=["system"])
 app.include_router(documents.router, prefix="/api/documents", tags=["documents"])
 app.include_router(query.router, prefix="/api/query", tags=["query"])
