@@ -3,8 +3,10 @@ import { Send, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import { api } from '../api/client';
 import type { Document, QueryResponse, Citation } from '../types';
 import MarkdownAnswer from '../components/MarkdownAnswer';
+import { Sk } from '../components/Skeleton';
 
 const cardBorder = 'rgba(51,65,85,0.5)';
+const borderColor = cardBorder;
 
 function CitationCard({ c, expanded, onToggle, cardRef }: {
   c: Citation;
@@ -173,8 +175,35 @@ export default function Ask() {
       )}
 
       {loading && (
-        <div className="text-center py-10 text-sm text-slate-600 animate-pulse">
-          Running hybrid retrieval pipeline…
+        <div className="space-y-4">
+          {/* Answer card skeleton */}
+          <div className="rounded-xl p-5 border space-y-3" style={{ background: 'rgba(15,23,42,0.8)', borderColor }}>
+            <Sk className="h-4 w-full" />
+            <Sk className="h-4 w-11/12" />
+            <Sk className="h-4 w-4/5" />
+            <Sk className="h-4 w-5/6" />
+            <Sk className="h-4 w-full mt-1" />
+            <Sk className="h-4 w-3/4" />
+            <Sk className="h-4 w-2/3" />
+          </div>
+          {/* Citation skeletons */}
+          <div>
+            <Sk className="h-3 w-52 mb-3" />
+            <div className="space-y-1.5">
+              {[0, 1, 2].map(i => (
+                <div key={i} className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,23,42,0.8)', border: `1px solid ${borderColor}` }}>
+                  <div className="px-4 py-2.5 flex items-center gap-3">
+                    <Sk className="w-6 h-6 rounded flex-shrink-0" />
+                    <div className="flex-1 space-y-1.5">
+                      <Sk className="h-3.5 w-40" />
+                      <Sk className="h-3 w-24" />
+                    </div>
+                    <Sk className="w-4 h-4 rounded flex-shrink-0" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

@@ -9,3 +9,19 @@
     color: #cbd5e1;
   }
 }
+
+@keyframes sk-shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.sk {
+  border-radius: 0.375rem;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.55) 25%,
+    rgba(51, 65, 85, 0.75) 50%,
+    rgba(30, 41, 59, 0.55) 75%
+  );
+  background-size: 600px 100%;
+  animation: sk-shimmer 1.5s ease-in-out infinite;
+}

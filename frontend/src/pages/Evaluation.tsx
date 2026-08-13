@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Play, RefreshCw, Upload, FileJson } from 'lucide-react';
 import { api } from '../api/client';
 import type { EvalResult } from '../types';
+import { Sk } from '../components/Skeleton';
 
 const STRATEGY_LABELS: Record<string, string> = {
   bm25: 'BM25',
@@ -114,9 +115,12 @@ export default function Evaluation() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-semibold text-slate-200">Evaluation Dataset</h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {datasetCount === null ? 'Loading…' : `${datasetCount} question${datasetCount !== 1 ? 's' : ''} in dataset`}
-            </p>
+            <div className="mt-0.5">
+              {datasetCount === null
+                ? <Sk className="h-3.5 w-32 mt-1" />
+                : <p className="text-xs text-slate-500">{datasetCount} question{datasetCount !== 1 ? 's' : ''} in dataset</p>
+              }
+            </div>
           </div>
           <button
             onClick={() => fileRef.current?.click()}
@@ -157,6 +161,31 @@ export default function Evaluation() {
       {error && (
         <div className="px-4 py-3 rounded-lg text-sm text-red-400" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
           {error}
+        </div>
+      )}
+
+      {results.length === 0 && loading && (
+        <div className="rounded-xl overflow-hidden" style={{ background: cardBg, border: `1px solid ${cardBorder}` }}>
+          <table className="w-full">
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${cardBorder}`, background: sectionBg }}>
+                {[60, 48, 40, 32, 48].map((w, i) => (
+                  <th key={i} className="px-5 py-3 text-left"><Sk className="h-3" style={{ width: `${w}px` }} /></th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[0, 1, 2, 3].map(i => (
+                <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                  <td className="px-5 py-3.5"><Sk className="h-3.5 w-32" /></td>
+                  <td className="px-5 py-3.5 text-right"><Sk className="h-3.5 w-14 ml-auto" /></td>
+                  <td className="px-5 py-3.5 text-right"><Sk className="h-3.5 w-14 ml-auto" /></td>
+                  <td className="px-5 py-3.5 text-right"><Sk className="h-3.5 w-14 ml-auto" /></td>
+                  <td className="px-5 py-3.5 text-right"><Sk className="h-3.5 w-10 ml-auto" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

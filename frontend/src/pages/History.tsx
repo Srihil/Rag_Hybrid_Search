@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import { api } from '../api/client';
 import type { QueryHistoryItem } from '../types';
 import StatusBadge from '../components/StatusBadge';
+import { Sk } from '../components/Skeleton';
 
 const cardBorder = 'rgba(51,65,85,0.5)';
 
@@ -16,7 +17,36 @@ export default function History() {
     api.query.history(100).then(setItems).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-6 text-sm text-slate-500 animate-pulse">Loading…</div>;
+  if (loading) return (
+    <div className="p-6 space-y-5">
+      <div className="space-y-1.5">
+        <Sk className="h-6 w-36" />
+        <Sk className="h-4 w-20" />
+      </div>
+      <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(51,65,85,0.5)' }}>
+        <table className="w-full">
+          <thead>
+            <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.5)', background: 'rgba(30,41,59,0.5)' }}>
+              {[48, 28, 20, 28, 20].map((w, i) => (
+                <th key={i} className="px-5 py-3"><Sk className="h-3" style={{ width: `${w}px` }} /></th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {[75, 55, 65, 45, 70, 60, 50].map((w, i) => (
+              <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.25)' }}>
+                <td className="px-5 py-3.5"><Sk className="h-3.5" style={{ width: `${w}%` }} /></td>
+                <td className="px-5 py-3.5"><Sk className="h-5 w-16 rounded-full" /></td>
+                <td className="px-5 py-3.5"><Sk className="h-3.5 w-5" /></td>
+                <td className="px-5 py-3.5"><Sk className="h-3.5 w-32" /></td>
+                <td className="px-5 py-3.5"><Sk className="h-3.5 w-12" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 
   return (
     <div className="p-6 space-y-5">

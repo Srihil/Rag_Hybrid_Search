@@ -3,6 +3,7 @@ import { ChevronRight, Trash2 } from 'lucide-react';
 import MarkdownAnswer from '../components/MarkdownAnswer';
 import { api } from '../api/client';
 import type { QueryHistoryItem, QueryDetail, RetrievalChunk } from '../types';
+import { Sk } from '../components/Skeleton';
 
 const cardBg = 'rgba(15,23,42,0.8)';
 const cardBorder = 'rgba(51,65,85,0.5)';
@@ -144,8 +145,57 @@ export default function Inspector() {
           )}
 
           {loading && (
-            <div className="flex items-center justify-center h-48">
-              <p className="text-sm text-slate-600 animate-pulse">Loading trace…</p>
+            <div className="space-y-4">
+              {/* Query box skeleton */}
+              <div className="rounded-xl px-4 py-3 space-y-2" style={{ background: 'rgba(67,97,238,0.08)', border: '1px solid rgba(67,97,238,0.2)' }}>
+                <Sk className="h-3 w-12" />
+                <Sk className="h-4 w-3/4" />
+              </div>
+              {/* Stage panels skeleton */}
+              <div className="flex items-start gap-0">
+                {[0, 1, 2, 3].map(i => (
+                  <div key={i} className="flex items-start">
+                    <div className="flex-1 min-w-0 rounded-xl overflow-hidden" style={{ background: cardBg, border: `1px solid ${cardBorder}`, minWidth: 0, width: '100%' }}>
+                      <div className="px-3 py-2.5 space-y-1.5" style={{ background: sectionBg, borderBottom: `1px solid ${cardBorder}` }}>
+                        <Sk className="h-3 w-24" />
+                        <Sk className="h-3 w-32" />
+                      </div>
+                      <div className="p-3 space-y-3">
+                        {[0, 1, 2, 3].map(j => (
+                          <div key={j} className="space-y-1.5">
+                            <div className="flex items-center gap-1.5">
+                              <Sk className="h-3 w-4 flex-shrink-0" />
+                              <Sk className="h-3 flex-1" />
+                              <Sk className="h-3 w-12 flex-shrink-0" />
+                            </div>
+                            <Sk className="h-3 w-2/3 ml-5" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {i < 3 && <Arrow />}
+                  </div>
+                ))}
+              </div>
+              {/* Final context skeleton */}
+              <div className="rounded-xl overflow-hidden" style={{ background: cardBg, border: '1px solid rgba(34,197,94,0.2)' }}>
+                <div className="px-4 py-2.5 space-y-1" style={{ background: 'rgba(34,197,94,0.06)', borderBottom: '1px solid rgba(34,197,94,0.15)' }}>
+                  <Sk className="h-3 w-36" />
+                  <Sk className="h-3 w-24" />
+                </div>
+                <div className="p-4 space-y-3">
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <Sk className="h-3 w-6" />
+                        <Sk className="h-3 w-40" />
+                      </div>
+                      <Sk className="h-3 w-full ml-6" />
+                      <Sk className="h-3 w-5/6 ml-6" />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

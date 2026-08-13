@@ -3,6 +3,7 @@ import { FileText, MessageSquare, Database, AlertCircle } from 'lucide-react';
 import { api } from '../api/client';
 import type { QueryHistoryItem, SystemStatus } from '../types';
 import StatusBadge from '../components/StatusBadge';
+import { Sk } from '../components/Skeleton';
 
 interface Stats {
   total_documents: number;
@@ -65,8 +66,44 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-slate-500 text-sm animate-pulse">Loading…</p>
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="space-y-1.5">
+          <Sk className="h-6 w-36" />
+          <Sk className="h-4 w-72" />
+        </div>
+        {/* Stat cards */}
+        <div className="grid grid-cols-4 gap-4">
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="rounded-xl p-5 border" style={{ background: 'rgba(30,41,59,0.6)', borderColor: 'rgba(51,65,85,0.5)' }}>
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <Sk className="h-3 w-20" />
+                  <Sk className="h-7 w-12" />
+                </div>
+                <Sk className="w-11 h-11 rounded-xl" />
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* Panels */}
+        <div className="grid grid-cols-2 gap-5">
+          {[0, 1].map(i => (
+            <div key={i} className="rounded-xl border overflow-hidden" style={{ background: 'rgba(15,23,42,0.8)', borderColor: 'rgba(51,65,85,0.5)' }}>
+              <div className="px-5 py-3 border-b" style={{ borderColor: 'rgba(51,65,85,0.5)', background: 'rgba(30,41,59,0.4)' }}>
+                <Sk className="h-3 w-28" />
+              </div>
+              <div className="p-5 space-y-3.5">
+                {[0, 1, 2, 3, 4].map(j => (
+                  <div key={j} className="flex items-center justify-between">
+                    <Sk className="h-3.5" style={{ width: `${[48, 64, 56, 72, 52][j]}%` }} />
+                    <Sk className="h-3.5 w-16" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

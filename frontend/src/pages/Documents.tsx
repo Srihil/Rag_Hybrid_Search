@@ -3,6 +3,7 @@ import { Upload, Trash2, ChevronDown, ChevronUp, FileText, AlertCircle } from 'l
 import { api } from '../api/client';
 import type { Document, DocumentChunk } from '../types';
 import StatusBadge from '../components/StatusBadge';
+import { Sk } from '../components/Skeleton';
 
 function formatBytes(n: number | null) {
   if (n == null) return '—';
@@ -76,7 +77,21 @@ function DocumentRow({ doc, onDelete }: { doc: Document; onDelete: () => void })
 
       {expanded && (
         <div className="max-h-72 overflow-y-auto" style={{ borderTop: `1px solid ${cardBorder}`, background: 'rgba(10,15,30,0.6)' }}>
-          {loadingChunks && <p className="px-4 py-3 text-sm text-slate-500">Loading chunks…</p>}
+          {loadingChunks && (
+            <div className="px-4 py-3 space-y-3">
+              {[70, 55, 80, 62].map((w, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="flex items-baseline gap-2">
+                    <Sk className="h-3 w-6" />
+                    <Sk className="h-3 w-14" />
+                    <Sk className="h-3 w-20" />
+                  </div>
+                  <Sk className="h-3 ml-6" style={{ width: `${w}%` }} />
+                  <Sk className="h-3 ml-6 w-1/2" />
+                </div>
+              ))}
+            </div>
+          )}
           {!loadingChunks && chunks.map(c => (
             <div key={c.id} className="px-4 py-2.5" style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
               <div className="flex items-baseline gap-2 mb-0.5">
