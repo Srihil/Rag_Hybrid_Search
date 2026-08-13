@@ -2,10 +2,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Citation } from '../types';
 
-/**
- * Recursively process React children: turn "[N]" text nodes into citation badge buttons.
- * If no onCiteClick is provided, citations render as plain styled superscripts.
- */
 export function processChildren(
   children: React.ReactNode,
   citations: Citation[],
@@ -21,20 +17,22 @@ export function processChildren(
       const cit = citations.find(c => c.source_num === n);
       const cls = `inline-flex items-center justify-center min-w-[1.2rem] h-5 px-1 rounded text-xs font-bold mx-0.5 align-text-top ${
         cit?.verified
-          ? 'bg-brand-100 text-brand-700'
-          : 'bg-red-100 text-red-600'
+          ? 'text-brand-400'
+          : 'text-red-400'
       }`;
+      const bg = cit?.verified ? 'rgba(67,97,238,0.2)' : 'rgba(239,68,68,0.2)';
       return onCiteClick ? (
         <button
           key={i}
           onClick={() => onCiteClick(n)}
           title={cit?.document_name ?? `Source ${n}`}
           className={`${cls} hover:opacity-80 transition-opacity cursor-pointer`}
+          style={{ background: bg }}
         >
           {n}
         </button>
       ) : (
-        <span key={i} className={cls}>{n}</span>
+        <span key={i} className={cls} style={{ background: bg }}>{n}</span>
       );
     });
   }
@@ -64,10 +62,10 @@ export default function MarkdownAnswer({
 
   const components = {
     p: ({ children }: { children?: React.ReactNode }) => (
-      <p className="mb-3 last:mb-0 leading-relaxed">{wrap(children)}</p>
+      <p className="mb-3 last:mb-0 leading-relaxed text-slate-300">{wrap(children)}</p>
     ),
     li: ({ children }: { children?: React.ReactNode }) => (
-      <li className="leading-relaxed">{wrap(children)}</li>
+      <li className="leading-relaxed text-slate-300">{wrap(children)}</li>
     ),
     ul: ({ children }: { children?: React.ReactNode }) => (
       <ul className="list-disc pl-5 space-y-1 my-2">{children}</ul>
@@ -76,30 +74,30 @@ export default function MarkdownAnswer({
       <ol className="list-decimal pl-5 space-y-1 my-2">{children}</ol>
     ),
     strong: ({ children }: { children?: React.ReactNode }) => (
-      <strong className="font-semibold text-gray-900">{children}</strong>
+      <strong className="font-semibold text-white">{children}</strong>
     ),
     em: ({ children }: { children?: React.ReactNode }) => (
-      <em className="italic text-gray-700">{children}</em>
+      <em className="italic text-slate-400">{children}</em>
     ),
     h1: ({ children }: { children?: React.ReactNode }) => (
-      <h1 className="text-base font-semibold text-gray-900 mt-4 mb-2">{children}</h1>
+      <h1 className="text-base font-semibold text-white mt-4 mb-2">{children}</h1>
     ),
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="text-sm font-semibold text-gray-900 mt-3 mb-1">{children}</h2>
+      <h2 className="text-sm font-semibold text-white mt-3 mb-1">{children}</h2>
     ),
     h3: ({ children }: { children?: React.ReactNode }) => (
-      <h3 className="text-sm font-medium text-gray-900 mt-2 mb-0.5">{children}</h3>
+      <h3 className="text-sm font-medium text-slate-200 mt-2 mb-0.5">{children}</h3>
     ),
     code: ({ children }: { children?: React.ReactNode }) => (
-      <code className="bg-gray-100 rounded px-1 py-0.5 text-xs font-mono text-gray-800">{children}</code>
+      <code className="rounded px-1 py-0.5 text-xs font-mono text-slate-300" style={{ background: 'rgba(51,65,85,0.6)' }}>{children}</code>
     ),
     blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="border-l-2 border-gray-300 pl-3 my-2 text-gray-600 italic">{children}</blockquote>
+      <blockquote className="border-l-2 border-slate-600 pl-3 my-2 text-slate-400 italic">{children}</blockquote>
     ),
   } as Parameters<typeof ReactMarkdown>[0]['components'];
 
   return (
-    <div className={`text-sm text-gray-800 ${className}`}>
+    <div className={`text-sm text-slate-300 ${className}`}>
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {text}
       </ReactMarkdown>

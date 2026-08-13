@@ -11,17 +11,20 @@ interface Stats {
   processing: number;
 }
 
-function StatCard({ icon: Icon, label, value, color }: {
-  icon: React.ElementType; label: string; value: string | number; color: string;
+function StatCard({ icon: Icon, label, value, gradient }: {
+  icon: React.ElementType; label: string; value: string | number; gradient: string;
 }) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-5">
+    <div
+      className="rounded-xl p-5 border"
+      style={{ background: 'rgba(30,41,59,0.6)', borderColor: 'rgba(51,65,85,0.5)' }}
+    >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">{label}</p>
-          <p className="text-2xl font-semibold text-gray-900 mt-1">{value}</p>
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{label}</p>
+          <p className="text-2xl font-bold text-white mt-1">{value}</p>
         </div>
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg" style={{ background: gradient }}>
           <Icon className="w-5 h-5 text-white" />
         </div>
       </div>
@@ -32,13 +35,15 @@ function StatCard({ icon: Icon, label, value, color }: {
 function ServiceDot({ status }: { status: string }) {
   const color =
     status === 'ok' || status === 'loaded'
-      ? 'bg-green-500'
+      ? '#22c55e'
       : status === 'disabled'
-      ? 'bg-gray-400'
+      ? '#475569'
       : status === 'not_loaded' || status === 'unreachable' || status === 'starting'
-      ? 'bg-yellow-500'
-      : 'bg-red-500';
-  return <span className={`inline-block w-2 h-2 rounded-full ${color}`} />;
+      ? '#f59e0b'
+      : '#ef4444';
+  return (
+    <span className="inline-block w-2 h-2 rounded-full flex-shrink-0" style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
+  );
 }
 
 export default function Dashboard() {
@@ -53,11 +58,7 @@ export default function Dashboard() {
       api.query.history(5),
       api.system.status(),
     ])
-      .then(([s, q, sys]) => {
-        setStats(s);
-        setQueries(q);
-        setSysStatus(sys);
-      })
+      .then(([s, q, sys]) => { setStats(s); setQueries(q); setSysStatus(sys); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -65,38 +66,40 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500 text-sm">Loading…</p>
+        <p className="text-slate-500 text-sm animate-pulse">Loading…</p>
       </div>
     );
   }
 
   return (
     <div className="p-6 space-y-6">
+      {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Overview of your document intelligence platform</p>
+        <h1 className="text-xl font-bold text-white">Dashboard</h1>
+        <p className="text-sm text-slate-500 mt-0.5">Overview of your document intelligence platform</p>
       </div>
 
+      {/* Stat cards */}
       <div className="grid grid-cols-4 gap-4">
-        <StatCard icon={FileText}       label="Documents"       value={stats?.total_documents ?? 0}          color="bg-brand-600" />
-        <StatCard icon={Database}       label="Chunks indexed"  value={(stats?.total_chunks ?? 0).toLocaleString()} color="bg-indigo-500" />
-        <StatCard icon={MessageSquare}  label="Total queries"   value={stats?.total_queries ?? 0}            color="bg-violet-500" />
-        <StatCard icon={AlertCircle}    label="Processing"      value={stats?.processing ?? 0}               color="bg-amber-500" />
+        <StatCard icon={FileText}      label="Documents"      value={stats?.total_documents ?? 0}                      gradient="linear-gradient(135deg,#4361ee,#3451d1)" />
+        <StatCard icon={Database}      label="Chunks indexed" value={(stats?.total_chunks ?? 0).toLocaleString()}      gradient="linear-gradient(135deg,#7c3aed,#6d28d9)" />
+        <StatCard icon={MessageSquare} label="Total queries"  value={stats?.total_queries ?? 0}                        gradient="linear-gradient(135deg,#0ea5e9,#0284c7)" />
+        <StatCard icon={AlertCircle}   label="Processing"     value={stats?.processing ?? 0}                           gradient="linear-gradient(135deg,#f59e0b,#d97706)" />
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-5">
         {/* Recent queries */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="px-5 py-3 border-b border-gray-200">
-            <h2 className="text-sm font-medium text-gray-900">Recent Queries</h2>
+        <div className="rounded-xl border overflow-hidden" style={{ background: 'rgba(15,23,42,0.8)', borderColor: 'rgba(51,65,85,0.5)' }}>
+          <div className="px-5 py-3 border-b" style={{ borderColor: 'rgba(51,65,85,0.5)', background: 'rgba(30,41,59,0.4)' }}>
+            <h2 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Recent Queries</h2>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y" style={{ '--tw-divide-color': 'rgba(51,65,85,0.3)' } as React.CSSProperties}>
             {queries.length === 0 && (
-              <p className="px-5 py-4 text-sm text-gray-400">No queries yet</p>
+              <p className="px-5 py-4 text-sm text-slate-600">No queries yet</p>
             )}
             {queries.map(q => (
-              <div key={q.id} className="px-5 py-3 flex items-start justify-between gap-3">
-                <p className="text-sm text-gray-700 truncate flex-1">{q.query}</p>
+              <div key={q.id} className="px-5 py-3 flex items-start justify-between gap-3" style={{ borderColor: 'rgba(51,65,85,0.3)' }}>
+                <p className="text-sm text-slate-300 truncate flex-1">{q.query}</p>
                 <StatusBadge status={q.status} />
               </div>
             ))}
@@ -104,33 +107,27 @@ export default function Dashboard() {
         </div>
 
         {/* System status */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="px-5 py-3 border-b border-gray-200">
-            <h2 className="text-sm font-medium text-gray-900">System Status</h2>
+        <div className="rounded-xl border overflow-hidden" style={{ background: 'rgba(15,23,42,0.8)', borderColor: 'rgba(51,65,85,0.5)' }}>
+          <div className="px-5 py-3 border-b" style={{ borderColor: 'rgba(51,65,85,0.5)', background: 'rgba(30,41,59,0.4)' }}>
+            <h2 className="text-xs font-semibold text-slate-300 uppercase tracking-wide">System Status</h2>
           </div>
           {sysStatus && (
             <div className="p-5 space-y-3">
               {sysStatus.services.map(s => (
                 <div key={s.name} className="flex items-center justify-between" title={s.detail || undefined}>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <ServiceDot status={s.status} />
-                    <span className="text-sm text-gray-700 capitalize">{s.name.replace(/_/g, ' ')}</span>
+                    <span className="text-sm text-slate-300 capitalize">{s.name.replace(/_/g, ' ')}</span>
                   </div>
-                  <span className={`text-xs ${s.status === 'disabled' ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <span className={`text-xs font-mono ${s.status === 'disabled' ? 'text-slate-600' : 'text-slate-500'}`}>
                     {s.status}
                   </span>
                 </div>
               ))}
-              <div className="pt-3 border-t border-gray-100 space-y-1">
-                <p className="text-xs text-gray-500">
-                  LLM: <span className="text-gray-700">{sysStatus.llm_provider} / {sysStatus.llm_model}</span>
-                </p>
-                <p className="text-xs text-gray-500">
-                  Embedder: <span className="text-gray-700">{sysStatus.embedding_model}</span>
-                </p>
-                <p className="text-xs text-gray-500">
-                  Reranker: <span className="text-gray-700">{sysStatus.reranker_model}</span>
-                </p>
+              <div className="pt-3 space-y-1" style={{ borderTop: '1px solid rgba(51,65,85,0.4)' }}>
+                <p className="text-xs text-slate-600">LLM: <span className="text-slate-400">{sysStatus.llm_provider} / {sysStatus.llm_model}</span></p>
+                <p className="text-xs text-slate-600">Embedder: <span className="text-slate-400">{sysStatus.embedding_model}</span></p>
+                <p className="text-xs text-slate-600">Reranker: <span className="text-slate-400">{sysStatus.reranker_model}</span></p>
               </div>
             </div>
           )}

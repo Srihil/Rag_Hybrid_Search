@@ -20,24 +20,32 @@ export default function Layout() {
     navigate('/login', { replace: true });
   }
 
-  const initials = user?.username
-    ? user.username.slice(0, 2).toUpperCase()
-    : '?';
+  const initials = user?.username ? user.username.slice(0, 2).toUpperCase() : '?';
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen" style={{ background: '#0f172a' }}>
       {/* Sidebar */}
-      <aside className="w-56 bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
-        <div className="px-5 py-4 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-brand-600 rounded-md flex items-center justify-center">
+      <aside
+        className="w-56 flex flex-col flex-shrink-0"
+        style={{ background: 'linear-gradient(180deg, #0a0f1e 0%, #0f172a 100%)', borderRight: '1px solid rgba(51,65,85,0.5)' }}
+      >
+        {/* Logo */}
+        <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(51,65,85,0.5)' }}>
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #4361ee, #7c3aed)' }}
+            >
               <Search className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-gray-900 text-sm">DocIntel</span>
+            <div>
+              <p className="font-bold text-white text-sm leading-none tracking-tight">DocIntel</p>
+              <p className="text-xs leading-none mt-0.5" style={{ color: '#475569' }}>Knowledge Base</p>
+            </div>
           </div>
-          <p className="text-xs text-gray-500 mt-0.5">Knowledge Base</p>
         </div>
 
+        {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {nav.map(({ to, icon: Icon, label }) => (
             <NavLink
@@ -45,34 +53,49 @@ export default function Layout() {
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
-                  isActive
-                    ? 'bg-brand-50 text-brand-700 font-medium'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
+                  isActive ? 'text-white font-medium' : 'text-slate-400 hover:text-white'
                 }`
               }
+              style={({ isActive }) =>
+                isActive
+                  ? { background: 'rgba(67,97,238,0.18)', boxShadow: 'inset 0 0 0 1px rgba(67,97,238,0.2)' }
+                  : undefined
+              }
             >
-              <Icon className="w-4 h-4" />
-              {label}
+              {({ isActive }) => (
+                <>
+                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-brand-400' : ''}`} />
+                  {label}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
 
+        {/* Decorative divider */}
+        <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(67,97,238,0.3), transparent)' }} />
+
         {/* User section */}
-        <div className="px-3 py-3 border-t border-gray-200 space-y-1">
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-md">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #4361ee, #7c3aed)' }}>
+        <div className="px-3 py-3 space-y-1">
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg">
+            <div
+              className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #4361ee, #7c3aed)' }}
+            >
               {initials}
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-800 truncate">{user?.username}</p>
-              <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+              <p className="text-xs font-medium text-slate-200 truncate">{user?.username}</p>
+              <p className="text-xs truncate" style={{ color: '#475569' }}>{user?.email}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-500 hover:text-red-400 transition-colors"
+            style={{ ':hover': { background: 'rgba(239,68,68,0.08)' } } as React.CSSProperties}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <LogOut className="w-4 h-4" />
             Sign out
@@ -81,7 +104,7 @@ export default function Layout() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto" style={{ background: '#0f172a' }}>
         <Outlet />
       </main>
     </div>
