@@ -1,18 +1,30 @@
+import hashlib
+import hmac
+import os
+import base64
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+_ITERATIONS = 480_000
+_SALT_LEN = 16
 
 
 def hash_password(plain: str) -> str:
-    return pwd_context.hash(plain)
+    salt = os.urandom(_SALT_LEN)
+    dk = hashlib.pbkdf2_hmac("sha256", plain.encode(), salt, _ITERATIONS)
+    return base64.b64encode(salt + dk).decode()
+
+
+def verify_password(plain: str, stored: str) -> bool:
+    try:
+        raw = base64.b64decode(stored.encode())
+        salt, dk = raw[:_SALT_LEN], raw[_SALT_LEN:]
+        check = hashlib.pbkdf2_hmac("sha256", plain.encode(), salt, _ITERATIONS)
+        return hmac.compare_digest(check, dk)
+    except Exception:
+        return False
 
 
 def create_access_token(data: dict) -> str:
